@@ -21,9 +21,9 @@ def create_app(**config_overrides):
     Migrate(app, db)
 
     # import blueprints
-    ...
+    from blog.views import blog_app
 
     # register blueprints
-    ...
+    app.register_blueprint(blog_app)
 
     return app
