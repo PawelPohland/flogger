@@ -7,3 +7,5 @@ Flask-WTF==1.0.1
 Flask-Markdown==0.3
 python-slugify==6.1.2
 Pillow==9.2.0
+email-validator==1.2.1
+cryptography==37.0.4
