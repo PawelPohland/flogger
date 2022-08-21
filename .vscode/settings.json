@@ -1,0 +1,9 @@
+{
+  // hide __pycache__ and venv folders from file explorer
+  // these folders are set in .gitignore file
+  // and unnecessarily clutter the file explorer
+  "files.exclude": {
+    "**/__pycache__/**": true,
+    "venv": true
+  }
+}
