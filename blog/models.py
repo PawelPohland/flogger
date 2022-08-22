@@ -15,7 +15,7 @@ class Post(db.Model):
     author = db.relationship(
         "Author", backref=db.backref("posts", lazy="dynamic"))
 
-    category = db.relatioship(
+    category = db.relationship(
         "Category", backref=db.backref("posts", lazy="dynamic"))
 
     def __init__(self, author, title, body, category=None, slug=None, publish_date=None, live=True):

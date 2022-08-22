@@ -1,6 +1,8 @@
+from urllib import request
 from flask import Blueprint
 from flask import render_template
 from flask import redirect
+from flask import request
 from flask import url_for
 from flask import session
 from flask import flash
@@ -37,11 +39,20 @@ def login():
     form = LoginForm()
     error = None
 
+    if request.method == "GET" and request.args.get("next"):
+        session["next"] = request.args.get("next", None)
+
     if form.validate_on_submit():
         author = Author.query.filter_by(email=form.email.data).first()
         session["id"] = author.id
         session["full_name"] = author.full_name
-        return redirect(url_for("blog_app.index"))
+
+        if "next" in session:
+            redirect_to = session.get("next")
+            session.pop("next")
+            return redirect(redirect_to)
+        else:
+            return redirect(url_for("blog_app.index"))
 
     return render_template("author/login.html", form=form, error=error)
 
