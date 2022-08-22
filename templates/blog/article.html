@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block title %}{{ post.title }}{% endblock %} {%
+block content %}
+<div class="row">
+  <div class="offset-md-2 col-md-8">
+    {% include "_flashmessages.html" %}
+
+    <h3 class="pt-3">{{ post.title }}</h3>
+    <div>{{ post.body | markdown }}</div>
+
+    <hr />
+    <div class="text-muted">
+      Posted by {{ post.author.full_name }} on {{
+      post.publish_date.strftime("%Y-%m-%d") }} {% if post.category %} {{
+      post.category.name }} {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
