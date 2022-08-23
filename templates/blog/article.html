@@ -19,7 +19,10 @@ block content %}
     <div class="text-muted">
       Posted by {{ post.author.full_name }} on {{
       post.publish_date.strftime("%Y-%m-%d") }} {% if post.category %} {{
-      post.category.name }} {% endif %}
+      post.category.name }} {% endif %} {% if session.id and session.id ==
+      post.author_id %} -
+      <a href="{{ url_for('blog_app.edit', slug=post.slug) }}">Edit</a>
+      {% endif %}
     </div>
   </div>
 </div>

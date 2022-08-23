@@ -1,23 +1,35 @@
-{% extends 'base.html' %} {% block title %}New Blog Post{% endblock %} {% block
-content %}
+{% extends 'base.html' %} {% block title %} {% if action == "new" %}New{% else
+%}Edit{% endif %} Blog Post {% endblock %} {% block content %}
 <div class="row">
   <div class="offset-md-2 col-md-8">
+    {% if action == "new" %} {% set form_action = url_for('blog_app.post') %}
     <h3>New Blog Post</h3>
-    {% from "_formhelpers.html" import render_field %}
+    {% else %} {% set form_action = url_for('blog_app.edit', slug=post.slug) %}
+    <h3>Edit Blog Post</h3>
+    {% endif %} {% from "_formhelpers.html" import render_field %}
 
     <form
       method="POST"
-      action="{{ url_for('blog_app.post') }}"
+      action="{{ form_action }}"
       enctype="multipart/form-data"
       role="form"
     >
-      {{ form.hidden_tag() }} {{ render_field(form.image, class='form-control')
-      }} {{ render_field(form.title, class='form-control') }} {{
+      {{ form.hidden_tag() }} {% if post and post.image %}
+      <img
+        src="{{ url_for('static', filename='images/uploads/' + post.image + '.sm.png') }}"
+        class="img-thumbnail"
+        alt=""
+      />
+      {% endif %} {{ render_field(form.image, class='form-control') }} {{
+      render_field(form.title, class='form-control') }} {{
       render_field(form.body, class='form-control', rows=10) }} {{
       render_field(form.category, class='form-select') }} {{
-      render_field(form.new_category, class='form-control') }}
-
+      render_field(form.new_category, class='form-control') }} {% if action ==
+      "new" %}
       <button type="submit" class="btn btn-primary">Post</button>
+      {% else %}
+      <button type="submit" class="btn btn-primary">Update</button>
+      {% endif %}
     </form>
   </div>
 </div>
