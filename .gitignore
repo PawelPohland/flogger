@@ -1,3 +1,4 @@
 __pycache__/
 venv/
+static/images/uploads/*.*
 _readme.txt

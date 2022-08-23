@@ -1,4 +1,3 @@
-from urllib import request
 from flask import Blueprint
 from flask import render_template
 from flask import redirect

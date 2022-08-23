@@ -2,7 +2,15 @@
 block content %}
 <div class="row">
   <div class="offset-md-2 col-md-8">
-    {% include "_flashmessages.html" %}
+    {% include "_flashmessages.html" %} {% if post.image %}
+    <div class="text-center pt-3">
+      <img
+        src="{{ url_for('static', filename='images/uploads/' + post.image + '.lg.png') }}"
+        class="img-fluid"
+        alt=""
+      />
+    </div>
+    {% endif %}
 
     <h3 class="pt-3">{{ post.title }}</h3>
     <div>{{ post.body | markdown }}</div>

@@ -9,6 +9,13 @@
     <div class="post-list">
       {% for post in posts.items %}
       <div class="card mb-3">
+        {% if post.image %}
+        <img
+          src="{{ url_for('static', filename='images/uploads/' + post.image + '.sm.png') }}"
+          class="card-img-top img-thumbnail"
+          alt=""
+        />
+        {% endif %}
         <div class="card-body">
           <div class="card-title">
             <a href="{{ url_for('blog_app.article', slug=post.slug) }}">
