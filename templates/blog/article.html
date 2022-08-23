@@ -22,6 +22,8 @@ block content %}
       post.category.name }} {% endif %} {% if session.id and session.id ==
       post.author_id %} -
       <a href="{{ url_for('blog_app.edit', slug=post.slug) }}">Edit</a>
+      -
+      <a href="{{ url_for('blog_app.delete', slug=post.slug) }}">Delete</a>
       {% endif %}
     </div>
   </div>

@@ -132,6 +132,17 @@ def edit(slug):
     return render_template("blog/post.html", form=form, post=post, action="edit")
 
 
+@blog_app.route("/delete/<slug>")
+@login_required
+def delete(slug):
+    post = Post.query.filter_by(slug=slug).first_or_404()
+    post.live = False
+    db.session.commit()
+
+    flash("Article deleted")
+    return redirect(url_for("blog_app.index"))
+
+
 def image_resize(original_file_path, image_id, image_base, extension):
     file_path = os.path.join(original_file_path, image_id + ".png")
     image = Image.open(file_path)
