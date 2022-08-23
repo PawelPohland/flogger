@@ -1,6 +1,47 @@
-{% extends 'base.html' %} {% block title %}Home - {{ config['BLOG_NAME'] }}{%
-endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %}{{ title }} - {{ config['BLOG_NAME']
+}}{% endblock %} {% block content %}
 <div class="row">
-  <div class="offset-md-2 col-md-8"></div>
+  <div class="offset-md-2 col-md-8 pt-5">
+    {% include "_flashmessages.html" %}
+
+    <h4>Latest Posts</h4>
+
+    <div class="post-list">
+      {% for post in posts.items %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="card-title">
+            <a href="{{ url_for('blog_app.article', slug=post.slug) }}">
+              {{ post.title }}
+            </a>
+          </div>
+          <div class="card-text">{{ post.body[:200] }}</div>
+        </div>
+        <div class="card-footer">
+          <div class="text-muted">
+            Posted by {{ post.author.full_name }} on {{
+            post.publish_date.strftime('%Y-%m-%d') }} {% if post.category %} in
+            {{ post.category.name }}{% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
+
+<div class="row">
+  <div class="offset-md-2 col-md-8 pt-5">
+    {% if posts.has_prev %}
+    <a href="{{ url_for('blog_app.index', page=posts.prev_num) }}">
+      &lt;&lt; Newer posts
+    </a>
+    {% endif %} {% if posts.has_next %}
+    <a href="{{ url_for('blog_app.index', page=posts.next_num) }}">
+      Older posts &gt;&gt;
+    </a>
+    {% endif %}
+  </div>
+</div>
+
 {% endblock %}

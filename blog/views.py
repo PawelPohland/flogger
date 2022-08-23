@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask import session
 from flask import render_template
 from flask import redirect
+from flask import request
 from flask import flash
 from flask import url_for
 
@@ -19,9 +20,15 @@ from author.decorators import login_required
 blog_app = Blueprint('blog_app', __name__)
 
 
+POSTS_PER_PAGE = 2
+
+
 @blog_app.route('/')
 def index():
-    return render_template("blog/index.html")
+    page = int(request.values.get("page", 1))
+    posts = Post.query.filter_by(live=True).order_by(
+        Post.publish_date.desc()).paginate(page, POSTS_PER_PAGE, False)
+    return render_template("blog/index.html", posts=posts)
 
 
 @blog_app.route('/post', methods=['GET', 'POST'])
