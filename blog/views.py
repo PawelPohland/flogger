@@ -12,6 +12,7 @@ from application import db
 
 from blog.models import Post
 from blog.models import Category
+from blog.models import Tag
 from blog.forms import PostForm
 
 from author.models import Author
@@ -43,6 +44,7 @@ def index():
 @login_required
 def post():
     form = PostForm()
+    tags_field = request.values.get("tags_field", "")
 
     if form.validate_on_submit():
         image_id = None
@@ -81,7 +83,7 @@ def post():
         flash("Article posted")
         return redirect(url_for("blog_app.article", slug=slug))
 
-    return render_template("blog/post.html", form=form, action="new")
+    return render_template("blog/post.html", form=form, action="new", tags_field=tags_field)
 
 
 @blog_app.route('/posts/<slug>')
@@ -155,3 +157,16 @@ def image_resize(original_file_path, image_id, image_base, extension):
         original_file_path, image_id + "." + extension + ".png")
 
     image.save(modified_file_path)
+
+
+def save_tags(post, tags_field):
+    post.tags.clear()
+
+    for tag_item in tags_field.split(","):
+        tag = Tag.query.filter_by(name=slugify(tag_item)).first()
+        if not tag:
+            tag = Tag(name=slugify(tag_item))
+            db.session.add(tag)
+        post.tags.append(tag)
+
+    return post

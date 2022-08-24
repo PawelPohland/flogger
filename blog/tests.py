@@ -1,14 +1,7 @@
 from application import create_app as create_app_base
 from application import db
 
-from author.models import Author
-
-from blog.models import Post
-from blog.models import Category
-
 from utils.test_db import TestDB
-
-from flask import session
 
 from slugify import slugify
 

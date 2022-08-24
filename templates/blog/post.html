@@ -24,8 +24,20 @@
       render_field(form.title, class='form-control') }} {{
       render_field(form.body, class='form-control', rows=10) }} {{
       render_field(form.category, class='form-select') }} {{
-      render_field(form.new_category, class='form-control') }} {% if action ==
-      "new" %}
+      render_field(form.new_category, class='form-control') }}
+
+      <div class="form-group mb-3">
+        <label for="tags_field">Tags</label>
+        <input
+          type="text"
+          class="form-control"
+          id="tags_field"
+          name="tags_field"
+          value="{{ tags_field }}"
+        />
+      </div>
+
+      {% if action == "new" %}
       <button type="submit" class="btn btn-primary">Post</button>
       {% else %}
       <button type="submit" class="btn btn-primary">Update</button>
