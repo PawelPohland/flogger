@@ -18,9 +18,16 @@ block content %}
     <hr />
     <div class="text-muted">
       Posted by {{ post.author.full_name }} on {{
-      post.publish_date.strftime("%Y-%m-%d") }} {% if post.category %} {{
-      post.category.name }} {% endif %} {% if session.id and session.id ==
-      post.author_id %} -
+      post.publish_date.strftime("%Y-%m-%d") }} {% if post.category %} in
+      <a
+        href="{{ url_for('blog_app.categories', category_id=post.category.id) }}"
+      >
+        {{ post.category.name }}
+      </a>
+      {% endif %} {% if post.tags %} [{% for tag in post.tags %}
+      <a href="{{ url_for('blog_app.tags', tag=tag.name) }}">{{ tag.name }}</a>
+      {% if not loop.last %}, {% endif %}{% endfor %}] {% endif %} {% if
+      session.id and session.id == post.author_id %} -
       <a href="{{ url_for('blog_app.edit', slug=post.slug) }}">Edit</a>
       -
       <a href="{{ url_for('blog_app.delete', slug=post.slug) }}">Delete</a>

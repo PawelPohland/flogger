@@ -37,7 +37,7 @@ def index():
     page = int(request.values.get("page", 1))
     posts = Post.query.filter_by(live=True).order_by(
         Post.publish_date.desc()).paginate(page, POSTS_PER_PAGE, False)
-    return render_template("blog/index.html", posts=posts)
+    return render_template("blog/index.html", posts=posts, title="Latest Posts")
 
 
 @blog_app.route('/post', methods=['GET', 'POST'])
@@ -73,6 +73,9 @@ def post():
 
         post = Post(author=author, title=title, body=body,
                     image=image_id, category=category)
+
+        save_tags(post, tags_field)
+
         db.session.add(post)
         db.session.commit()
 
@@ -96,6 +99,8 @@ def article(slug):
 @login_required
 def edit(slug):
     post = Post.query.filter_by(slug=slug).first_or_404()
+    tags_field = request.values.get("tags_field", load_tags(post))
+
     form = PostForm(obj=post)
 
     if form.validate_on_submit():
@@ -126,12 +131,14 @@ def edit(slug):
         if form.title.data != original_title:
             post.slug = slugify(str(post.id) + "-" + form.title.data)
 
+        save_tags(post, tags_field)
+
         db.session.commit()
         flash("Article edited")
 
         return redirect(url_for("blog_app.article", slug=post.slug))
 
-    return render_template("blog/post.html", form=form, post=post, action="edit")
+    return render_template("blog/post.html", form=form, post=post, tags_field=tags_field, action="edit")
 
 
 @blog_app.route("/delete/<slug>")
@@ -143,6 +150,32 @@ def delete(slug):
 
     flash("Article deleted")
     return redirect(url_for("blog_app.index"))
+
+
+@blog_app.route("/categories/<category_id>")
+def categories(category_id):
+    category = Category.query.filter_by(id=category_id).first_or_404()
+    page = int(request.values.get("page", 1))
+
+    #posts = category.posts.filter_by(live=True).order_by(Post.publish_date.desc()).paginate(page, POSTS_PER_PAGE, False)
+
+    posts = Post.query.filter_by(category=category, live=True)\
+        .order_by(Post.publish_date.desc())\
+        .paginate(page, POSTS_PER_PAGE, False)
+
+    return render_template("blog/category_posts.html", posts=posts, title=category.name, category_id=category_id)
+
+
+@blog_app.route("/tags/<tag>")
+def tags(tag):
+    tag = Tag.query.filter_by(name=tag).first_or_404()
+    page = int(request.values.get("page", 1))
+
+    posts = tag.posts.filter_by(live=True)\
+        .order_by(Post.publish_date.desc())\
+        .paginate(page, POSTS_PER_PAGE, False)
+
+    return render_template("blog/tag_posts.html", posts=posts, title=f"Tag: {tag.name}", tag=tag.name)
 
 
 def image_resize(original_file_path, image_id, image_base, extension):
@@ -170,3 +203,12 @@ def save_tags(post, tags_field):
         post.tags.append(tag)
 
     return post
+
+
+def load_tags(post):
+    tags_field = ""
+
+    for tag in post.tags:
+        tags_field += tag.name + ", "
+
+    return tags_field[:-2]

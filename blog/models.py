@@ -2,6 +2,7 @@ from application import db
 from datetime import datetime
 
 
+# association table
 tag_x_post = db.Table('tag_x_post',
                       db.Column('tag_id', db.Integer, db.ForeignKey(
                           'tag.id'), primary_key=True),
@@ -27,7 +28,7 @@ class Post(db.Model):
     category = db.relationship(
         "Category", backref=db.backref("posts", lazy="dynamic"))
 
-    tags = db.relationship("Tag", secondary=tag_x_post, lazy="subquery",
+    tags = db.relationship("Tag", secondary=tag_x_post, lazy="subquery", order_by="asc(Tag.id)",
                            backref=db.backref("posts", lazy="dynamic"))
 
     def __init__(self, author, title, body, image=None, category=None, slug=None, publish_date=None, live=True):
